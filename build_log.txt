@@ -1,0 +1,662 @@
+﻿
+> dawabill@0.1.0 build
+> next build
+
+  Γû▓ Next.js 14.2.5
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/19) ...
+node.exe : Error: supabaseUrl is required.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Error: supabaseUrl is required.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:15089)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 7073 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\auth\login\page.js:1:2340)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+    at I (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next
+-server\app-page.runtime.prod.js:12:94362)
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next-se
+rver\app-page.runtime.prod.js:12:96668 {
+  digest: '3126320579'
+}
+
+Error occurred prerendering page "/auth/login". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:15089)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 7073 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\auth\login\page.js:1:2340)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+    at I (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next
+-server\app-page.runtime.prod.js:12:94362)
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next-se
+rver\app-page.runtime.prod.js:12:96668
+   Generating static pages (4/19) 
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:15089)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 9206 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\billing\page.js:48:4825)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+    at I (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next
+-server\app-page.runtime.prod.js:12:94362)
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next-se
+rver\app-page.runtime.prod.js:12:96668 {
+  digest: '2742043618'
+}
+
+Error occurred prerendering page "/billing". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:15089)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 9206 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\billing\page.js:48:4825)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+    at I (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next
+-server\app-page.runtime.prod.js:12:94362)
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next-se
+rver\app-page.runtime.prod.js:12:96668
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\692.js:1:7967)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 2058 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\auth\signup\page.js:1:2346)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+    at I (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next
+-server\app-page.runtime.prod.js:12:94362)
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next-se
+rver\app-page.runtime.prod.js:12:96668 {
+  digest: '1009189177'
+}
+
+Error occurred prerendering page "/auth/signup". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\692.js:1:7967)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 2058 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\auth\signup\page.js:1:2346)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+    at I (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next
+-server\app-page.runtime.prod.js:12:94362)
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next-se
+rver\app-page.runtime.prod.js:12:96668
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\132.js:1:6828)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 5583 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\132.js:1:6266)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 8874 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\132.js:1:2281)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490) {
+  digest: '2286310228'
+}
+
+Error occurred prerendering page "/auth". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\132.js:1:6828)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 5583 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\132.js:1:6266)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 8874 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\132.js:1:2281)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\ocr\page.js:1:11878)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 5583 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\ocr\page.js:1:11316)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 8874 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\ocr\page.js:1:7331)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490) {
+  digest: '2418439024'
+}
+
+Error occurred prerendering page "/ocr". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\ocr\page.js:1:11878)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 5583 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\ocr\page.js:1:11316)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 8874 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\ocr\page.js:1:7331)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\692.js:1:7967)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 5583 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\692.js:1:7405)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 5886 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\inventory\page.js:21:281)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490) {
+  digest: '2362908225'
+}
+
+Error occurred prerendering page "/inventory". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\692.js:1:7967)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 5583 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\692.js:1:7405)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 5886 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\inventory\page.js:21:281)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:15089)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 5889 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\dashboard\page.js:26:2540)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+    at I (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next
+-server\app-page.runtime.prod.js:12:94362)
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next-se
+rver\app-page.runtime.prod.js:12:96668 {
+  digest: '856610732'
+}
+
+Error occurred prerendering page "/dashboard". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:15089)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 5889 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\dashboard\page.js:26:2540)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+    at I (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next
+-server\app-page.runtime.prod.js:12:94362)
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next-se
+rver\app-page.runtime.prod.js:12:96668
+   Generating static pages (9/19) 
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:15089)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 3755 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\reports\page.js:16:211)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+    at I (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next
+-server\app-page.runtime.prod.js:12:94362)
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next-se
+rver\app-page.runtime.prod.js:12:96668 {
+  digest: '775300847'
+}
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\692.js:1:7967)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 3667 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\settings\page.js:31:396)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+    at I (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next
+-server\app-page.runtime.prod.js:12:94362)
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next-se
+rver\app-page.runtime.prod.js:12:96668 {
+  digest: '3483008313'
+}
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\page.js:1:8925)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 5583 (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\page.js:1:8363)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 8874 (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\page.js:1:4378)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490) {
+  digest: '3435039863'
+}
+
+Error occurred prerendering page "/reports". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:15089)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 3755 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\reports\page.js:16:211)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+    at I (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next
+-server\app-page.runtime.prod.js:12:94362)
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next-se
+rver\app-page.runtime.prod.js:12:96668
+
+Error occurred prerendering page "/settings". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\692.js:1:7967)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 3667 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\settings\page.js:31:396)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+    at I (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next
+-server\app-page.runtime.prod.js:12:94362)
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next-se
+rver\app-page.runtime.prod.js:12:96668
+
+Error occurred prerendering page "/". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\page.js:1:8925)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 5583 (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\page.js:1:8363)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 8874 (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\page.js:1:4378)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+   Generating static pages (14/19) 
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:15089)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 5583 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:14527)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 8874 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:10542)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490) {
+  digest: '2813890269'
+}
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:15089)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 7951 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:1:4469)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+    at I (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next
+-server\app-page.runtime.prod.js:12:94362)
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next-se
+rver\app-page.runtime.prod.js:12:96668 {
+  digest: '558452308'
+}
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\692.js:1:7967)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 8265 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\support\page.js:16:217)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+    at I (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next
+-server\app-page.runtime.prod.js:12:94362)
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next-se
+rver\app-page.runtime.prod.js:12:96668 {
+  digest: '3066004755'
+}
+
+Error occurred prerendering page "/settings/subscription". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:15089)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 5583 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:14527)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 8874 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:10542)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+
+Error occurred prerendering page "/super-admin". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:15089)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 7951 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:1:4469)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+    at I (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next
+-server\app-page.runtime.prod.js:12:94362)
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next-se
+rver\app-page.runtime.prod.js:12:96668
+
+Error occurred prerendering page "/support". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\692.js:1:7967)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 8265 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\support\page.js:16:217)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+    at I (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next
+-server\app-page.runtime.prod.js:12:94362)
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compiled\next-se
+rver\app-page.runtime.prod.js:12:96668
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:15089)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 5583 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:14527)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 8874 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:10542)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490) {
+  digest: '2813890269'
+}
+
+Error occurred prerendering page "/_not-found". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: supabaseUrl is required.
+    at C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48130
+    at new rI (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:48381)
+    at rN (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\chunks\927.js:78:52121)
+    at 1632 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:15089)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 5583 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:14527)
+    at t (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at 8874 (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\app\super-admin\page.js:6:10542)
+    at Object.t [as require] (C:\Users\Sajan 
+Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\.next\server\webpack-runtime.js:1:128)
+    at require (C:\Users\Sajan Gautam\Downloads\Dawabill-20260326T171936Z-3-001\Dawabill\node_modules\next\dist\compile
+d\next-server\app-page.runtime.prod.js:16:18490)
+ Γ£ô Generating static pages (19/19)
+
+> Export encountered errors on following paths:
+	/_not-found/page: /_not-found
+	/auth/login/page: /auth/login
+	/auth/page: /auth
+	/auth/signup/page: /auth/signup
+	/billing/page: /billing
+	/dashboard/page: /dashboard
+	/inventory/page: /inventory
+	/ocr/page: /ocr
+	/page: /
+	/reports/page: /reports
+	/settings/page: /settings
+	/settings/subscription/page: /settings/subscription
+	/super-admin/page: /super-admin
+	/support/page: /support
