@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useStore } from "@/hooks/useStore";
 import { Button } from "@/components/ui/Button";
@@ -36,13 +36,7 @@ export default function SettingsPage() {
   const [loyaltyThreshold, setLoyaltyThreshold] = useState("100");
   const [isUpdatingSettings, setIsUpdatingSettings] = useState(false);
 
-  useEffect(() => {
-    if (storeId && !dataFetched) {
-      fetchAccounts();
-    }
-  }, [storeId, dataFetched]);
-
-  const fetchAccounts = async () => {
+  const fetchAccounts = useCallback(async () => {
     setLoading(true);
     const { data } = await supabase
       .from('payment_accounts')
@@ -68,7 +62,13 @@ export default function SettingsPage() {
 
     setDataFetched(true);
     setLoading(false);
-  };
+  }, [storeId]);
+
+  useEffect(() => {
+    if (storeId && !dataFetched) {
+      fetchAccounts();
+    }
+  }, [storeId, dataFetched, fetchAccounts]);
 
   const handleUpdateSettings = async () => {
     setIsUpdatingSettings(true);

@@ -4,6 +4,7 @@ import GlobalSubscriptionGuard from "@/components/shared/GlobalSubscriptionGuard
 import "./globals.css";
 import { ConnectivityMonitor } from "@/components/shared/ConnectivityMonitor";
 import { ClientLayout } from "@/components/shared/ClientLayout";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "DawaBill - SaaS for Medical Stores",
@@ -16,18 +17,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#2563eb" />
       </head>
-      <body className="antialiased font-sans min-h-screen bg-slate-50 relative">
-        <ConnectivityMonitor />
-        <GlobalSubscriptionGuard>
-          <ClientLayout>{children}</ClientLayout>
-        </GlobalSubscriptionGuard>
-        <InstallPrompt />
+      <body className="antialiased font-sans min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300 relative">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ConnectivityMonitor />
+          <GlobalSubscriptionGuard>
+            <ClientLayout>{children}</ClientLayout>
+          </GlobalSubscriptionGuard>
+          <InstallPrompt />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -48,6 +50,7 @@ export default function RootLayout({
             `,
           }}
         />
+        </ThemeProvider>
       </body>
     </html>
   );

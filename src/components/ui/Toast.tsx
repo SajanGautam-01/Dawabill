@@ -37,9 +37,14 @@ export function Toast({ message, type, duration = 5000, onClose }: ToastProps) {
   };
 
   return (
-    <div className={`fixed bottom-6 right-6 z-[9999] flex items-center gap-3 px-4 py-3 rounded-2xl border-2 shadow-2xl transition-all duration-300 ${bgColors[type]} ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+    <div 
+      role="alert" 
+      aria-live="assertive" 
+      aria-describedby="toast-message"
+      className={`fixed bottom-6 right-6 z-[9999] flex items-center gap-3 px-4 py-3 rounded-2xl border-2 shadow-2xl transition-all duration-300 ${bgColors[type]} ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
+    >
       <div className="shrink-0">{icons[type]}</div>
-      <p className="text-sm font-bold text-slate-800 pr-2">{message}</p>
+      <p id="toast-message" className="text-sm font-bold text-slate-800 pr-2">{message}</p>
       <button 
         onClick={() => {
           setIsVisible(false);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card, CardContent } from "@/components/ui/Card";
@@ -32,7 +32,7 @@ export default function InventoryPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [toast, setToast] = useState<{ message: string, type: 'success' | 'error' | 'info' } | null>(null);
 
-  const fetchProducts = async (searchTerm = "") => {
+  const fetchProducts = useCallback(async (searchTerm = "") => {
     if (!storeId) return;
     setLoading(true);
     
@@ -56,7 +56,7 @@ export default function InventoryPage() {
     }
     setDataFetched(true);
     setLoading(false);
-  };
+  }, [storeId]);
 
   useEffect(() => {
     if (storeId) {
@@ -68,7 +68,7 @@ export default function InventoryPage() {
     } else if (!storeLoading) {
       setLoading(false);
     }
-  }, [storeId, storeLoading, search]);
+  }, [storeId, storeLoading, search, fetchProducts]);
 
   if (subLoading || storeLoading) {
     return <div className="flex h-[50vh] items-center justify-center text-slate-500 animate-pulse">Running authorization checks...</div>;

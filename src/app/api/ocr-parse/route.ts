@@ -1,8 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Tesseract from 'tesseract.js';
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
+
+let ocrRateLimit: Ratelimit | null = null;
+if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  ocrRateLimit = new Ratelimit({
+    redis: new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    }),
+    limiter: Ratelimit.slidingWindow(3, '10 s'),
+    analytics: true,
+  });
+}
 
 export async function POST(req: NextRequest) {
   try {
+    if (ocrRateLimit) {
+      const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "127.0.0.1";
+      const { success } = await ocrRateLimit.limit(`ocr_${ip}`);
+      if (!success) {
+        return NextResponse.json({ error: "Too Many Requests. OCR Edge Throttled." }, { status: 429 });
+      }
+    }
+
     const contentType = req.headers.get('content-type') || '';
     let text = "";
 
@@ -44,12 +66,8 @@ export async function POST(req: NextRequest) {
     const batchMatch = text.match(/BATCH[:\s]*([A-Z0-9]+)/i);
     if (batchMatch) medicineData.batch_number = batchMatch[1];
 
-    // If no data found, provide some mock data for the UI to show it "worked"
     if (!medicineData.mrp && !medicineData.expiry_date) {
-        medicineData.name = "Amoxicillin 500mg";
-        medicineData.mrp = 155.50;
-        medicineData.expiry_date = "12/2026";
-        medicineData.batch_number = "AMX9921";
+      return NextResponse.json({ error: 'OCR Processing failed to identify reliable pricing or expiry fields.' }, { status: 400 });
     }
 
     return NextResponse.json({ 
@@ -59,16 +77,6 @@ export async function POST(req: NextRequest) {
 
   } catch (error: any) {
     console.error('OCR Parse Error:', error);
-    // Return mock data even on error to fulfill "basic working logic" requirement for demo/dev
-    return NextResponse.json({ 
-      success: true, 
-      data: {
-        name: "Mock Medicine (OCR Placeholder)",
-        mrp: 299.00,
-        expiry_date: "08/2027",
-        batch_number: "MOCK123",
-        error: error.message
-      } 
-    });
+    return NextResponse.json({ error: error.message || 'Internal AI OCR system collapse.' }, { status: 500 });
   }
 }

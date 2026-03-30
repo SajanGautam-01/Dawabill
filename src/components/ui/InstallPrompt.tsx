@@ -47,12 +47,17 @@ export default function InstallPrompt() {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:w-80 bg-white border border-gray-200 shadow-2xl rounded-xl p-4 z-50 flex items-center justify-between gap-4 animate-in slide-in-from-bottom-5">
+    <div 
+      role="dialog" 
+      aria-modal="true" 
+      aria-describedby="install-prompt-desc"
+      className="fixed bottom-4 left-4 right-4 md:left-auto md:w-80 bg-white border border-gray-200 shadow-2xl rounded-xl p-4 z-50 flex items-center justify-between gap-4 animate-in slide-in-from-bottom-5"
+    >
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center shrink-0 shadow-inner">
           <span className="text-white font-bold text-sm">DB</span>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col" id="install-prompt-desc">
           <h4 className="font-semibold text-gray-900 text-sm">Install DawaBill</h4>
           <span className="text-xs text-gray-500">Fast & offline access</span>
         </div>

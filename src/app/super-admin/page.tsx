@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/Button";
@@ -28,59 +28,7 @@ export default function SuperAdminPage() {
   const [totalPages, setTotalPages] = useState(1);
   const ITEMS_PER_PAGE = 50;
 
-  useEffect(() => {
-    checkSuperAdminAccess();
-  }, []);
-
-  // Fetch paginated stores when tab mounts or page changes
-  useEffect(() => {
-    if (isAdmin && activeTab === 'stores') {
-      fetchStores();
-    }
-  }, [currentPage, activeTab, isAdmin]);
-
-  const checkSuperAdminAccess = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      router.push("/auth/login");
-      return;
-    }
-
-    const { data: user } = await supabase
-      .from("users")
-      .select("role")
-      .eq("id", session.user.id)
-      .single();
-
-    if (user?.role !== "super_admin") {
-      // Security: Block all others
-      router.push("/dashboard");
-      return;
-    }
-
-    setIsAdmin(true);
-    fetchAllData();
-  };
-
-  const fetchStores = async () => {
-    setLoading(true);
-    const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    const end = start + ITEMS_PER_PAGE - 1;
-
-    // Utilize optimized range function for scalable fetching
-    const { data: storesData, count } = await supabase
-      .from("stores")
-      .select("*, users(name, email), subscriptions(status, expiry_date, plans(name))", { count: "exact" })
-      .order('created_at', { ascending: false })
-      .range(start, end);
-
-    if (storesData) setStores(storesData);
-    if (count) setTotalPages(Math.ceil(count / ITEMS_PER_PAGE) || 1);
-    
-    setLoading(false);
-  };
-
-  const fetchAllData = async () => {
+  const fetchAllData = useCallback(async () => {
     setLoading(true);
     
     // Initial fetch for overview & stats only
@@ -110,7 +58,59 @@ export default function SuperAdminPage() {
     }
 
     setLoading(false);
-  };
+  }, []);
+
+  const checkSuperAdminAccess = useCallback(async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      router.push("/auth/login");
+      return;
+    }
+
+    const { data: user } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", session.user.id)
+      .single();
+
+    if (user?.role !== "super_admin") {
+      // Security: Block all others
+      router.push("/dashboard");
+      return;
+    }
+
+    setIsAdmin(true);
+    fetchAllData();
+  }, [router, fetchAllData]);
+
+  const fetchStores = useCallback(async () => {
+    setLoading(true);
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE - 1;
+
+    // Utilize optimized range function for scalable fetching
+    const { data: storesData, count } = await supabase
+      .from("stores")
+      .select("*, users(name, email), subscriptions(status, expiry_date, plans(name))", { count: "exact" })
+      .order('created_at', { ascending: false })
+      .range(start, end);
+
+    if (storesData) setStores(storesData);
+    if (count) setTotalPages(Math.ceil(count / ITEMS_PER_PAGE) || 1);
+    
+    setLoading(false);
+  }, [currentPage]);
+
+  useEffect(() => {
+    checkSuperAdminAccess();
+  }, [checkSuperAdminAccess]);
+
+  // Fetch paginated stores when tab mounts or page changes
+  useEffect(() => {
+    if (isAdmin && activeTab === 'stores') {
+      fetchStores();
+    }
+  }, [currentPage, activeTab, isAdmin, fetchStores]);
 
   // --- ACTIONS ---
   

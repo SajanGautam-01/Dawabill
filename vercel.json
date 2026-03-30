@@ -3,6 +3,12 @@
   "installCommand": "npm ci",
   "framework": "nextjs",
   "regions": ["bom1"],
+  "crons": [
+    {
+      "path": "/api/cron/refresh-stats",
+      "schedule": "*/5 * * * *"
+    }
+  ],
   "headers": [
     {
       "source": "/sw.js",

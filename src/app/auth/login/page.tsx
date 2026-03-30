@@ -15,8 +15,13 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [status, setStatus] = useState<AuthStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [pinMode, setPinMode] = useState(false);
+  const [fastPin, setFastPin] = useState("");
 
   useEffect(() => {
+    if (localStorage.getItem('dawabill_fast_pin')) {
+       setPinMode(true);
+    }
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session && event === 'SIGNED_IN') {
         router.push('/dashboard');
@@ -50,6 +55,10 @@ export default function LoginPage() {
           setStatus("server_down");
         }
       } else if (data.session) {
+        if (fastPin.length === 4) {
+           localStorage.setItem('dawabill_fast_pin', 'true');
+           localStorage.setItem('dawabill_fast_auth', btoa(`${fastPin}:${email}:${password}`));
+        }
         setStatus("success");
         router.push("/dashboard");
       }
@@ -92,6 +101,7 @@ export default function LoginPage() {
                 type="email"
                 placeholder="you@example.com"
                 value={email}
+                autoComplete="username webauthn"
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full h-14 pl-12 pr-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-blue-500 outline-none transition-all font-medium text-slate-900"
               />
@@ -111,6 +121,7 @@ export default function LoginPage() {
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 value={password}
+                autoComplete="current-password webauthn"
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full h-14 pl-12 pr-12 rounded-2xl border-2 border-slate-100 bg-slate-50/50 focus:bg-white focus:border-blue-500 outline-none transition-all font-medium text-slate-900"
               />
@@ -123,6 +134,43 @@ export default function LoginPage() {
               </button>
             </div>
           </div>
+
+          {pinMode ? (
+            <div className="space-y-2 bg-blue-50/50 p-4 rounded-2xl border border-blue-100">
+               <label className="text-sm font-bold text-blue-800">Fast Login PIN</label>
+               <input
+                 type="password"
+                 maxLength={4}
+                 placeholder="Enter 4-digit PIN"
+                 value={fastPin}
+                 autoComplete="off"
+                 onChange={(e) => {
+                   const val = e.target.value.replace(/\D/g, '').slice(0,4);
+                   setFastPin(val);
+                   if (val.length === 4) {
+                      const cached = localStorage.getItem('dawabill_fast_auth');
+                      if (cached) {
+                         try {
+                           const dec = atob(cached).split(':');
+                           if (dec[0] === val) {
+                             setEmail(dec[1]);
+                             setPassword(dec[2]);
+                           } else {
+                             setErrorMessage("Invalid Fast PIN.");
+                           }
+                         } catch {}
+                      }
+                   }
+                 }}
+                 className="w-full h-12 text-center tracking-[1em] font-black text-xl rounded-xl border-2 border-slate-200 focus:border-blue-500 outline-none"
+               />
+               <p className="text-xs text-blue-600 font-medium text-center">Set PIN or use to auto-fill</p>
+            </div>
+          ) : (
+             <button type="button" onClick={() => setPinMode(true)} className="text-sm font-bold text-slate-500 hover:text-blue-600 block w-full text-right mt-2">
+               Enable Fast PIN
+             </button>
+          )}
 
           <AuthButton type="submit" isLoading={status === 'loading'} className="mt-8">
             Sign In

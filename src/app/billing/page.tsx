@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useReactToPrint } from "react-to-print";
 import { InvoiceTemplate } from "@/components/billing/InvoiceTemplate";
 import { supabase } from "@/lib/supabaseClient";
@@ -11,26 +10,15 @@ import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/Card";
 import { 
-  Search, Plus, Trash2, FileText, Loader2, IndianRupee, QrCode, Printer, WifiOff, CloudUpload, AlertTriangle,
-  Camera, Scan, Tag, Award
+  Plus, FileText, Loader2, IndianRupee, QrCode, Printer, WifiOff, CloudUpload, AlertTriangle, Tag, Award, Search
 } from "lucide-react";
-import { Html5QrcodeScanner } from "html5-qrcode";
 import Link from "next/link";
 import { logger } from "@/lib/logger";
 import { useSubscriptionGuard } from "@/hooks/useSubscriptionGuard";
 import { Toast } from "@/components/ui/Toast";
-
-type Product = {
-  id: string;
-  name: string;
-  sale_rate: number;
-  stock_quantity: number;
-};
-
-type BillItem = Product & {
-  quantity: number;
-  total: number;
-};
+import ProductSearch, { Product } from "@/components/billing/ProductSearch";
+import CartTable, { BillItem } from "@/components/billing/CartTable";
+import { saveOfflineBill, getAllOfflineBills, deleteOfflineBill } from "@/lib/idb";
 
 type PaymentAccount = {
   id: string;
@@ -44,10 +32,6 @@ export default function BillingPage() {
   
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-  
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<Product[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
   
   const [billItems, setBillItems] = useState<BillItem[]>([]);
   const [paymentAccounts, setPaymentAccounts] = useState<PaymentAccount[]>([]);
@@ -65,13 +49,11 @@ export default function BillingPage() {
   // Phase 2: Advanced Features
   const [availableDiscounts, setAvailableDiscounts] = useState<any[]>([]);
   const [selectedDiscountId, setSelectedDiscountId] = useState<string | null>(null);
-  const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [pointsEarned, setPointsEarned] = useState(0);
   
   const [toast, setToast] = useState<{ message: string, type: 'success' | 'error' | 'info' } | null>(null);
 
   const printRef = useRef<HTMLDivElement>(null);
-  const barcodeScannerRef = useRef<Html5QrcodeScanner | null>(null);
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
     documentTitle: successBillData ? `Invoice_${successBillData.billNumber}` : 'Invoice'
@@ -80,14 +62,18 @@ export default function BillingPage() {
   const defaultGstRate = 0.12; // 12% default GST for simple build (Rule 1)
   
   useEffect(() => {
-    // Check for offline bills in localStorage on load
-    try {
-      const queue = JSON.parse(localStorage.getItem('dawabill_offline_queue') || '[]');
-      if (Array.isArray(queue) && queue.length > 0) setOfflineQueue(queue);
-    } catch {
-      // If storage is corrupted, reset to a safe default
-      localStorage.removeItem('dawabill_offline_queue');
-    }
+    // Check for offline bills in IndexedDB on load and setup manual sync fallback
+    const initOffline = async () => {
+       const bills = await getAllOfflineBills();
+       if (bills && bills.length > 0) setOfflineQueue(bills);
+    };
+    initOffline();
+
+    // Fallback sync trigger for iOS/Safari when network returns
+    const handleOnline = () => {
+      syncOfflineBills();
+    };
+    window.addEventListener('online', handleOnline);
 
     if (storeId) {
       // Fetch Store details for PDF template
@@ -120,49 +106,14 @@ export default function BillingPage() {
       // Generate initial idempotency key
       setCurrentIdempotencyKey(globalThis.crypto?.randomUUID?.() ?? String(Date.now()));
     }
+    
+    return () => {
+      // @ts-ignore
+      window.removeEventListener('online', handleOnline);
+    };
   }, [storeId]);
   
-  useEffect(() => {
-    if (!storeId || searchQuery.length < 2) {
-      setSearchResults([]);
-      return;
-    }
-    
-    setIsSearching(true);
-    const fetchProducts = async () => {
-      try {
-        const { data } = await supabase
-          .from('products')
-          .select('id, name, sale_rate, stock_quantity')
-          .eq('store_id', storeId)
-          .ilike('name', `%${searchQuery}%`)
-          .limit(10);
-          
-        if (data) setSearchResults(data);
-      } finally {
-        setIsSearching(false);
-      }
-    };
-
-    const timer = setTimeout(fetchProducts, 300);
-    return () => clearTimeout(timer);
-  }, [searchQuery, storeId]);
-
-  useEffect(() => {
-    return () => {
-      // Ensure scanner is cleaned up on route change/unmount
-      try {
-        barcodeScannerRef.current?.clear();
-      } catch {
-        // ignore cleanup errors
-      } finally {
-        barcodeScannerRef.current = null;
-      }
-    };
-  }, []);
-
-  const addProductToBill = (product: Product) => {
-    // Senior Dev Rule 2: Test feature - Handle out of stock simply
+  const addProductToBill = useCallback((product: Product) => {
     if (product.stock_quantity <= 0) {
       setError(`Cannot add ${product.name}. Out of stock!`);
       return;
@@ -171,7 +122,10 @@ export default function BillingPage() {
     setBillItems(prev => {
       const existing = prev.find(item => item.id === product.id);
       if (existing) {
-        if (existing.quantity >= product.stock_quantity) return prev; // block over-adding
+        if (existing.quantity >= product.stock_quantity) {
+          setTimeout(() => setError(`Cannot add more. Only ${product.stock_quantity} in stock.`), 0);
+          return prev; 
+        }
         
         return prev.map(item => 
           item.id === product.id 
@@ -181,49 +135,10 @@ export default function BillingPage() {
       }
       return [...prev, { ...product, quantity: 1, total: product.sale_rate }];
     });
-    setSearchQuery("");
-    setSearchResults([]);
     setError(null);
-  };
+  }, []);
 
-  const handleBarcodeScan = () => {
-    // If we're closing the scanner, clear it to prevent duplicate layers/camera locks.
-    if (isScannerOpen) {
-      try {
-        barcodeScannerRef.current?.clear();
-      } catch (e) {
-        console.log(e);
-      } finally {
-        barcodeScannerRef.current = null;
-        setIsScannerOpen(false);
-      }
-      return;
-    }
-
-    setIsScannerOpen(true);
-    if (!isScannerOpen) {
-      setTimeout(() => {
-        // Ensure we don't render multiple scanners into the same container.
-        if (barcodeScannerRef.current) return;
-
-        const scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }, false);
-        barcodeScannerRef.current = scanner;
-        scanner.render((text) => {
-          setSearchQuery(text);
-          try {
-            scanner.clear();
-          } catch (e) {
-            console.log(e);
-          } finally {
-            barcodeScannerRef.current = null;
-          }
-          setIsScannerOpen(false);
-        }, (err) => console.log(err));
-      }, 500);
-    }
-  };
-
-  const updateQuantity = (id: string, qtyStr: string, max: number) => {
+  const updateQuantity = useCallback((id: string, qtyStr: string, max: number) => {
     const qty = parseInt(qtyStr) || 1;
     if (qty > max) {
       setError(`Only ${max} items in stock for this product.`);
@@ -235,11 +150,11 @@ export default function BillingPage() {
         ? { ...item, quantity: qty, total: qty * item.sale_rate }
         : item
     ));
-  };
+  }, []);
 
-  const removeItem = (id: string) => {
+  const removeItem = useCallback((id: string) => {
     setBillItems(prev => prev.filter(item => item.id !== id));
-  };
+  }, []);
 
   // Calculations
   const subtotal = billItems.reduce((sum, item) => sum + item.total, 0);
@@ -260,79 +175,47 @@ export default function BillingPage() {
   const earnedPoints = Math.floor(grandTotal / 100);
 
   const syncOfflineBills = async () => {
-    if (offlineQueue.length === 0 || !navigator.onLine) return;
-    if (localStorage.getItem('sync_lock') === 'true') return;
+    // Manual fallback / online-trigger for browsers without Background Sync
+    if (!navigator.onLine) return;
     
-    localStorage.setItem('sync_lock', 'true');
     setIsSyncing(true);
-    
     try {
+      const billsToSync = await getAllOfflineBills();
+      if (billsToSync.length === 0) return;
+
       let successCount = 0;
       let failCount = 0;
-      
-      // Clone arrays to safely iterate while modifying the source
-      const currentQueue = [...offlineQueue];
-      let remainingQueue = [...offlineQueue];
 
-      for (const bill of currentQueue) {
-        if (bill.sync_status === 'success') continue;
-
+      for (const bill of billsToSync) {
         try {
-          // 1. Prepare items for the atomic RPC
-          const itemsForRPC = bill.items.map((item: any) => ({
-            product_id: item.id,
-            quantity: item.quantity,
-            sale_rate: item.sale_rate || item.price 
-          }));
-
-          // 2. Call the Atomic RPC (Hardened v5 with Idempotency)
-          const { data: rpcResponse, error: rpcError } = await supabase.rpc('create_bill_v5', {
-            p_store_id: bill.store_id,
-            p_customer_name: bill.customer_name,
-            p_customer_phone: bill.customer_phone,
-            p_payment_mode: bill.payment_mode,
-            p_items: itemsForRPC,
-            p_idempotency_key: bill.idempotency_key,
-            p_external_transaction_id: bill.external_transaction_id || null,
-            p_discount_id: bill.discount_id || null
+          const res = await fetch('/api/sync-offline', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bill)
           });
-
-          if (rpcError || !rpcResponse || !rpcResponse.success) {
-             throw new Error(rpcError?.message || rpcResponse?.error || "Atomic sync failed");
-          }
-
-          successCount++;
-          remainingQueue = remainingQueue.filter(b => b.bill_number !== bill.bill_number);
-          setOfflineQueue(remainingQueue);
-          localStorage.setItem('dawabill_offline_queue', JSON.stringify(remainingQueue));
-        } catch (itemError) {
-          console.error(`Failed to sync offline bill ${bill.bill_number}:`, itemError);
-          failCount++;
           
-          // Mark as FAILED in local storage with retry increment
-          remainingQueue = remainingQueue.map(b => 
-            b.bill_number === bill.bill_number 
-              ? { ...b, sync_status: 'failed', retry_count: (b.retry_count || 0) + 1 } 
-              : b
-          );
-          setOfflineQueue(remainingQueue);
-          localStorage.setItem('dawabill_offline_queue', JSON.stringify(remainingQueue));
+          if (!res.ok) throw new Error("API Sync Rejected");
+          
+          await deleteOfflineBill(bill.idempotency_key);
+          successCount++;
+        } catch (err) {
+          console.error("Manual Sync Failed for bill", bill.bill_number, err);
+          failCount++;
         }
       }
-      
-      // Final User Feedback
-      if (failCount === 0 && successCount > 0) {
+
+      if (successCount > 0 && failCount === 0) {
         setToast({ message: "All offline bills synced successfully!", type: 'success' });
       } else if (failCount > 0) {
-        setToast({ message: `Synced ${successCount} bills. ${failCount} failed.`, type: 'error' });
+         // Silently let it remain in IDB for later
       }
-
+      
+      const newDocs = await getAllOfflineBills();
+      setOfflineQueue(newDocs);
     } catch (e) {
-      console.error("Critical Sync Loop Error:", e);
-      setToast({ message: "Sync process encountered an error.", type: 'error' });
+      console.error("Sync Wrapper Error:", e);
     } finally {
       setIsSyncing(false);
-      localStorage.removeItem('sync_lock');
     }
   };
 
@@ -433,6 +316,7 @@ export default function BillingPage() {
   const saveBillToDB = async (paymentMode: string = 'cash', transactionId: string | null = null) => {
     if (!storeId) return setError("Authentication Error");
     setError(null);
+    setIsSaving(true);
     setSuccessBillData(null);
 
 
@@ -455,9 +339,22 @@ export default function BillingPage() {
          retry_count: 0,
          created_at: new Date().toISOString()
        };
-       const updatedQueue = [...offlineQueue, newOfflineBill];
+       
+       // 1. Save to native physical IDB storage robustly
+       await saveOfflineBill(newOfflineBill);
+       const updatedQueue = await getAllOfflineBills();
        setOfflineQueue(updatedQueue);
-       localStorage.setItem('dawabill_offline_queue', JSON.stringify(updatedQueue));
+       
+       // 2. Register native SW Background Sync (Graceful degradation)
+       if ('serviceWorker' in navigator && 'SyncManager' in window) {
+         try {
+           const reg = await navigator.serviceWorker.ready;
+           await (reg as any).sync.register('sync-offline-bills');
+           console.log("Background Sync Registered successfully");
+         } catch (e) {
+           console.error("Background sync registration failed natively", e);
+         }
+       }
        
        setSuccessBillData({
           billNumber,
@@ -635,50 +532,10 @@ export default function BillingPage() {
               <CardTitle className="text-xl font-bold flex items-center gap-3 text-slate-800"><Search size={22} className="text-teal-500"/> Search & Add Products</CardTitle>
             </CardHeader>
             <CardContent className="p-6 relative">
-                <div className="relative group flex gap-2">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5 group-focus-within:text-teal-500 transition-colors" />
-                    <Input 
-                      placeholder="Type product name or use scanner..." 
-                      className="pl-12 h-14 rounded-2xl border-2 border-slate-200 bg-slate-50 focus-visible:ring-4 focus-visible:ring-teal-500/20 focus-visible:border-teal-500 focus-visible:bg-white transition-all text-lg font-medium shadow-sm w-full"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      tabIndex={3}
-                    />
-                    {isSearching && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4 animate-spin" />}
-                  </div>
-                  <Button 
-                    variant="outline"
-                    onClick={handleBarcodeScan}
-                    className={`h-14 w-14 rounded-2xl border-2 flex items-center justify-center transition-all ${isScannerOpen ? 'bg-red-50 border-red-200 text-red-600' : 'bg-slate-50 border-slate-200 text-slate-400 hover:text-teal-500 hover:border-teal-200'}`}
-                  >
-                    {isScannerOpen ? <Scan className="animate-pulse" /> : <Camera />}
-                  </Button>
-                </div>
-
-                {isScannerOpen && (
-                  <div id="reader" className="w-full mt-4 rounded-3xl overflow-hidden border-4 border-dashed border-slate-100 bg-slate-50 min-h-[300px]"></div>
-                )}
-
-              {/* Search Dropdown */}
-              {searchResults.length > 0 && (
-                <div className="absolute left-6 right-6 top-[90px] z-50 bg-white/95 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-2xl overflow-hidden max-h-[300px] overflow-y-auto">
-                  {searchResults.map((p) => (
-                    <button
-                      key={p.id}
-                      onClick={() => addProductToBill(p)}
-                      className="w-full text-left px-5 py-4 border-b border-slate-100 hover:bg-teal-50/80 focus:bg-teal-50/80 focus:outline-none transition-all flex justify-between items-center first:rounded-t-2xl last:rounded-b-2xl last:border-0"
-                      tabIndex={4}
-                    >
-                      <div>
-                        <p className="font-semibold text-slate-800">{p.name}</p>
-                        <p className="text-xs text-slate-500">Stock: {p.stock_quantity}</p>
-                      </div>
-                      <div className="font-medium text-blue-600">₹{p.sale_rate}</div>
-                    </button>
-                  ))}
-                </div>
-              )}
+              <ProductSearch 
+                storeId={storeId!} 
+                onAddProduct={addProductToBill} 
+              />
             </CardContent>
           </Card>
         </div>
@@ -736,44 +593,12 @@ export default function BillingPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 bg-white">
-              <div className="max-h-[350px] overflow-y-auto pr-1">
-                {billItems.length === 0 ? (
-                  <div className="p-12 text-center text-slate-400 font-medium">
-                    No items added yet.<br/>Search and select a product to begin.
-                  </div>
-                ) : (
-                  billItems.map(item => (
-                    <div key={item.id} className="p-4 mx-2 my-2 bg-slate-50/80 rounded-2xl hover:bg-white hover:shadow-md hover:-translate-y-0.5 hover:border-blue-100 border border-transparent transition-all flex items-start justify-between group">
-                      <div className="flex-1">
-                        <p className="font-bold text-slate-800 text-base leading-tight">{item.name}</p>
-                        <p className="text-sm text-slate-500 mt-1.5 font-medium">₹{item.sale_rate} x </p>
-                        <div className="flex items-center gap-3 mt-2.5">
-                          <Input 
-                            type="number" 
-                            min="1" 
-                            max={item.stock_quantity}
-                            value={item.quantity}
-                            onChange={(e) => updateQuantity(item.id, e.target.value, item.stock_quantity)}
-                            className="h-10 w-24 rounded-xl text-base font-bold border-2 border-slate-200 focus-visible:ring-4 focus-visible:ring-blue-500/20 px-3 bg-white"
-                            tabIndex={5}
-                          />
-                          <span className="text-xs font-bold text-slate-400 bg-slate-200/50 px-2 py-1 rounded-md">/{item.stock_quantity} left</span>
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-3 ml-4">
-                        <span className="font-black text-slate-900 text-lg tracking-tight">₹{item.total.toFixed(2)}</span>
-                        <button 
-                          onClick={() => removeItem(item.id)}
-                          className="bg-white border border-slate-200 shadow-sm text-slate-400 hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-all p-2 rounded-xl"
-                          title="Remove item"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
+              <CartTable 
+                items={billItems}
+                isSaving={isSaving}
+                onUpdateQuantity={updateQuantity}
+                onRemoveItem={removeItem}
+              />
             </CardContent>
             
             <CardFooter className="flex-col bg-slate-50/80 border-t border-slate-100 p-6 space-y-6 rounded-b-3xl">

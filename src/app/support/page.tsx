@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useStore } from "@/hooks/useStore";
 import { Button } from "@/components/ui/Button";
@@ -28,13 +28,7 @@ export default function SupportPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (storeId && !dataFetched) {
-      fetchTickets();
-    }
-  }, [storeId, dataFetched]);
-
-  const fetchTickets = async () => {
+  const fetchTickets = useCallback(async () => {
     setLoading(true);
     const { data } = await supabase
       .from('support_tickets')
@@ -46,7 +40,13 @@ export default function SupportPage() {
     if (data) setTickets(data);
     setDataFetched(true);
     setLoading(false);
-  };
+  }, [storeId]);
+
+  useEffect(() => {
+    if (storeId && !dataFetched) {
+      fetchTickets();
+    }
+  }, [storeId, dataFetched, fetchTickets]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

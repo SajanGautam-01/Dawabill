@@ -82,3 +82,77 @@ self.addEventListener('fetch', (e) => {
       })
   );
 });
+
+// --- PHASE 5: OFFLINE QUEUE BACKGROUND SYNC ---
+
+// Simple native IDB wrapper for ServiceWorker Scope
+function openOfflineDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('DawabillOfflineStore', 1);
+    request.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains('cash_queue')) {
+        db.createObjectStore('cash_queue', { keyPath: 'idempotency_key' });
+      }
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'sync-offline-bills') {
+    console.log('[SW Background Sync] Triggered IDB Cash Queue Recovery');
+    event.waitUntil(processOfflineQueue());
+  }
+});
+
+async function processOfflineQueue() {
+  const db = await openOfflineDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('cash_queue', 'readonly');
+    const store = tx.objectStore('cash_queue');
+    const request = store.getAll();
+    
+    request.onsuccess = async () => {
+      const bills = request.result;
+      if (!bills || bills.length === 0) return resolve();
+      
+      let hasError = false;
+      
+      for (const bill of bills) {
+        try {
+          const res = await fetch('/api/sync-offline', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bill)
+          });
+          
+          if (!res.ok) {
+            hasError = true;
+            console.error('SW Sync Rejected Structurally:', await res.text());
+            continue; // Move to next bill, let background sync retry this later 
+          }
+          
+          // Delete from IndexedDB upon success locally avoiding duplicates
+          const deleteTx = db.transaction('cash_queue', 'readwrite');
+          deleteTx.objectStore('cash_queue').delete(bill.idempotency_key);
+          console.log('[SW Background Sync] Successfully Synced:', bill.bill_number);
+          
+        } catch (err) {
+          console.error('SW Sync Network Failed:', err);
+          hasError = true;
+        }
+      }
+      
+      if (hasError) {
+        // Rejecting causes the ServiceWorker Background Sync to exponential-backoff retry automatically later!
+        reject(new Error('Partial or complete sync failure, queuing browser native retry.'));
+      } else {
+        resolve();
+      }
+    };
+    
+    request.onerror = () => reject(request.error);
+  });
+}
