@@ -1,73 +1,93 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Tesseract from 'tesseract.js';
-import { Ratelimit } from '@upstash/ratelimit';
-import { Redis } from '@upstash/redis';
-
-let ocrRateLimit: Ratelimit | null = null;
-if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
-  ocrRateLimit = new Ratelimit({
-    redis: new Redis({
-      url: process.env.UPSTASH_REDIS_REST_URL,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN,
-    }),
-    limiter: Ratelimit.slidingWindow(3, '10 s'),
-    analytics: true,
-  });
-}
 
 export async function POST(req: NextRequest) {
   try {
-    if (ocrRateLimit) {
-      const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "127.0.0.1";
-      const { success } = await ocrRateLimit.limit(`ocr_${ip}`);
-      if (!success) {
-        return NextResponse.json({ error: "Too Many Requests. OCR Edge Throttled." }, { status: 429 });
-      }
+    const { text } = await req.json();
+
+    if (!text) {
+      return NextResponse.json({ error: 'No text provided' }, { status: 400 });
     }
 
-    const contentType = req.headers.get('content-type') || '';
-    let text = "";
-
-    if (contentType.includes('application/json')) {
-      const body = await req.json();
-      text = body.text || "";
-    } else {
-      const formData = await req.formData();
-      const image = formData.get('image') as File;
-      if (image) {
-        const buffer = Buffer.from(await image.arrayBuffer());
-        const { data } = await Tesseract.recognize(buffer, 'eng');
-        text = data.text;
-      }
-    }
-
-    if (!text && !contentType.includes('multipart/form-data')) {
-      return NextResponse.json({ error: 'No text or image provided' }, { status: 400 });
-    }
-
-    // Basic parsing logic (very rudimentary for demonstration)
-    // In a real app, this would be a more robust AI-based extractor
-    const lines = text.split('\n');
+    const lines = text.split('\n').map((l: string) => l.trim()).filter((l: string) => l.length > 0);
+    
     const medicineData = {
-      name: "Parsed Medicine",
+      name: "Smart Extraction",
       mrp: 0,
       expiry_date: "",
       batch_number: "",
-      raw_text: text.slice(0, 500) // return snippet for debugging
     };
 
-    // Simple Regex patterns for extraction
-    const mrpMatch = text.match(/MRP[:\s]*(\d+\.?\d*)/i);
-    if (mrpMatch) medicineData.mrp = parseFloat(mrpMatch[1]);
+    // ─── PHARMACY PATTERN MATCHING ──────────────────────────────────────────
+    const patterns = {
+      // Matches: MRP 150, Rs. 150.00, ₹150, Price 150, or standalone 150.00
+      mrp: [
+        /(?:MRP|RS|₹|PRICE|RATE)[:\s]*(\d+\.?\d*)/i,
+        /(\d+\.\d{2})/
+      ],
+      // Matches: 12/25, 12/2025, 2025-12, EXP: 12/25
+      expiry: [
+        /(?:EXP|EXPIRY|VALID)[:\s]*(\d{2}\/\d{2,4})/i,
+        /(\d{2}\/\d{2,4})/
+      ],
+      // Matches: B.No. AB123, Batch AB123, Lot AB123, or 5-15 alphanumeric characters
+      batch: [
+        /(?:BATCH|B\.?NO|LOT|L\.?NO)[:\s]*([A-Z0-9-]+)/i,
+        /([A-Z0-9-]{6,15})/
+      ]
+    };
 
-    const expiryMatch = text.match(/EXP[:\s]*(\d{2}\/\d{2,4})/i) || text.match(/Expiry[:\s]*(\d{2}\/\d{2,4})/i);
-    if (expiryMatch) medicineData.expiry_date = expiryMatch[1];
+    // 1. MRP Extraction
+    for (const p of patterns.mrp) {
+      const match = text.match(p);
+      if (match) {
+        const val = parseFloat(match[1] || match[0]);
+        if (!isNaN(val) && val > 0) {
+          medicineData.mrp = val;
+          break;
+        }
+      }
+    }
 
-    const batchMatch = text.match(/BATCH[:\s]*([A-Z0-9]+)/i);
-    if (batchMatch) medicineData.batch_number = batchMatch[1];
+    // 2. Expiry Extraction
+    for (const p of patterns.expiry) {
+      const match = text.match(p);
+      if (match) {
+        medicineData.expiry_date = match[1] || match[0];
+        break;
+      }
+    }
 
-    if (!medicineData.mrp && !medicineData.expiry_date) {
-      return NextResponse.json({ error: 'OCR Processing failed to identify reliable pricing or expiry fields.' }, { status: 400 });
+    // 3. Batch Extraction
+    for (const p of patterns.batch) {
+      const match = text.match(p);
+      if (match) {
+        let b = match[1] || match[0];
+        b = b.replace(/BATCH|LOT|B\.?NO|L\.?NO|[:\s]*/gi, '');
+        if (b.length >= 4) {
+          medicineData.batch_number = b.toUpperCase();
+          break;
+        }
+      }
+    }
+
+    // 4. Product Name Extraction (Smart Logic)
+    // Rule: Find the first line that is mostly uppercase and doesn't contain forbidden keywords
+    const forbidden = /MRP|EXP|BATCH|LOT|PRICE|DATE|MFG|RS|₹|TABLET|CAPSULE/i;
+    const nameLine = lines.find((l: string) => 
+      l.length > 4 && 
+      !forbidden.test(l) && 
+      (l === l.toUpperCase() || (l.match(/[A-Z]/g)?.length || 0) > l.length * 0.5)
+    );
+
+    if (nameLine) {
+      medicineData.name = nameLine.trim();
+    } else {
+      // Fallback: Use the longest non-keyword line
+      const longest = lines
+        .filter((l: string) => !forbidden.test(l))
+        .sort((a: string, b: string) => b.length - a.length)[0];
+      medicineData.name = longest || "Parsed Item";
     }
 
     return NextResponse.json({ 
@@ -77,6 +97,6 @@ export async function POST(req: NextRequest) {
 
   } catch (error: any) {
     console.error('OCR Parse Error:', error);
-    return NextResponse.json({ error: error.message || 'Internal AI OCR system collapse.' }, { status: 500 });
+    return NextResponse.json({ error: 'System processing failure' }, { status: 500 });
   }
 }

@@ -23,6 +23,20 @@ export default function SignupPage() {
     setErrorMessage("");
 
     try {
+      // 1. PRE-CHECK: Duplicate Email Violation Check
+      const { data: existingUser } = await supabase
+        .from('users')
+        .select('id')
+        .eq('email', email)
+        .maybeSingle();
+
+      if (existingUser) {
+        setErrorMessage("This email already has an account. Please sign in instead.");
+        setStatus("server_down");
+        return;
+      }
+
+      // 2. Auth Signup
       const { data, error } = await supabase.auth.signUp({
         email,
         password,

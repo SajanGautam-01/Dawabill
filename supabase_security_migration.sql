@@ -14,11 +14,17 @@ CREATE TABLE IF NOT EXISTS public.audit_logs (
 );
 
 ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Store Isolation" ON public.audit_logs FOR ALL USING (store_id = (SELECT store_id FROM public.users WHERE id = auth.uid()));
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Store Isolation' AND tablename = 'audit_logs') THEN
+        CREATE POLICY "Store Isolation" ON public.audit_logs FOR ALL USING (store_id = (SELECT store_id FROM public.users WHERE id = auth.uid()));
+    END IF;
+END $$;
 
 -- 2. Optimized Aggregation Functions (Dashboard Performance)
 
 -- Get Top Selling Products (Aggregated on Server)
+DROP FUNCTION IF EXISTS public.get_top_selling_products(UUID, INTEGER);
 CREATE OR REPLACE FUNCTION public.get_top_selling_products(p_store_id UUID, p_limit INTEGER DEFAULT 5)
 RETURNS TABLE (name TEXT, value BIGINT) 
 LANGUAGE plpgsql
@@ -36,6 +42,7 @@ END;
 $$;
 
 -- Get Revenue Stats (Aggregated on Server)
+DROP FUNCTION IF EXISTS public.get_revenue_stats(UUID, INTEGER);
 CREATE OR REPLACE FUNCTION public.get_revenue_stats(p_store_id UUID, p_days INTEGER DEFAULT 30)
 RETURNS TABLE (date TEXT, revenue NUMERIC) 
 LANGUAGE plpgsql
@@ -66,6 +73,7 @@ SET search_path = public
 AS $$
 DECLARE
   v_bill_id UUID;
+  v_caller_store_id UUID;
   v_item JSONB;
   v_product_id UUID;
   v_quantity INTEGER;
@@ -78,6 +86,14 @@ DECLARE
   v_sub_status TEXT;
   v_result JSONB;
 BEGIN
+  -- 🛡️ SECURITY GATE: Verify caller identity
+  SELECT store_id INTO v_caller_store_id FROM public.users 
+  WHERE id = auth.uid();
+
+  IF v_caller_store_id IS NULL OR v_caller_store_id != p_store_id THEN
+    RAISE EXCEPTION 'Security Violation: Post-authentication bypass detected. Incident logged.';
+  END IF;
+
   -- 1. Subscription Guard (Backend Enforcement)
   SELECT status INTO v_sub_status FROM public.subscriptions 
   WHERE store_id = p_store_id AND expiry_date > NOW() 

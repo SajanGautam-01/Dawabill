@@ -84,12 +84,12 @@ export default function SupportPage() {
         
         {/* Create Ticket Form */}
         <div className="lg:col-span-5">
-          <Card className="rounded-3xl shadow-xl border border-blue-100 bg-gradient-to-br from-white to-blue-50/50 sticky top-24 overflow-hidden">
-            <CardHeader className="bg-blue-50/80 border-b border-blue-100 p-8 rounded-t-3xl backdrop-blur-md">
-              <CardTitle className="text-2xl font-black flex items-center gap-3 text-blue-900">
-                <div className="p-3 bg-blue-100 text-blue-600 rounded-xl shadow-inner"><LifeBuoy size={24} strokeWidth={2.5}/></div> Create Ticket
+          <Card className="rounded-3xl shadow-xl border-slate-100 bg-gradient-to-br from-white to-slate-50/50 sticky top-24 overflow-hidden">
+            <CardHeader className="bg-slate-50/80 border-b border-slate-100 p-8 rounded-t-3xl backdrop-blur-md">
+              <CardTitle className="text-2xl font-black flex items-center gap-3 text-slate-900">
+                <div className="p-3 bg-primary/10 text-primary rounded-xl shadow-inner"><LifeBuoy size={24} strokeWidth={2.5}/></div> Create Ticket
               </CardTitle>
-              <CardDescription className="text-base font-medium mt-2 text-blue-800/70">
+              <CardDescription className="text-base font-medium mt-2 text-slate-600/70">
                 Describe your issue and our team will get back to you within 24 hours.
               </CardDescription>
             </CardHeader>
@@ -105,7 +105,7 @@ export default function SupportPage() {
                     required 
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
-                    className="h-14 rounded-2xl border-2 border-slate-200 focus-visible:ring-4 focus-visible:ring-blue-500/20 text-base font-medium bg-white"
+                    className="h-14 rounded-2xl border-2 border-slate-200 focus-visible:ring-4 focus-visible:ring-primary/20 text-base font-medium bg-white"
                   />
                 </div>
                 
@@ -115,13 +115,13 @@ export default function SupportPage() {
                     id="description" 
                     required 
                     placeholder="Provide as much detail as possible..."
-                    className="w-full min-h-[140px] p-4 border-2 border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none font-medium text-base resize-y bg-white"
+                    className="w-full min-h-[140px] p-4 border-2 border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary/20 focus:border-primary transition-all outline-none font-medium text-base resize-y bg-white"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   />
                 </div>
 
-                <Button type="submit" className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-blue-500/20 bg-blue-600 hover:bg-blue-700 hover:-translate-y-0.5 transition-all text-white" disabled={isSubmitting || !subject || !description}>
+                <Button type="submit" className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 hover:-translate-y-0.5 transition-all text-white" disabled={isSubmitting || !subject || !description}>
                    {isSubmitting ? <Loader2 className="mr-3 h-6 w-6 animate-spin" /> : <Send className="mr-3 h-5 w-5" strokeWidth={2.5} />}
                    {isSubmitting ? "Submitting..." : "Submit Ticket"}
                 </Button>
@@ -139,7 +139,7 @@ export default function SupportPage() {
           <div className="space-y-5">
             {loading ? (
               <div className="h-48 flex items-center justify-center border-2 border-dashed border-slate-200 rounded-3xl bg-slate-50">
-                <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
             ) : tickets.length === 0 ? (
               <div className="p-12 border-2 border-dashed border-slate-200 rounded-3xl text-center flex flex-col items-center bg-slate-50/50">
@@ -151,7 +151,7 @@ export default function SupportPage() {
               </div>
             ) : (
                tickets.map(ticket => (
-                 <Card key={ticket.id} className="rounded-3xl shadow-sm border-2 border-slate-100 hover:border-blue-200 hover:shadow-md transition-all cursor-default bg-white">
+                 <Card key={ticket.id} className="rounded-3xl shadow-sm border-2 border-slate-100 hover:border-primary/20 hover:shadow-md transition-all cursor-default bg-white">
                    <CardContent className="p-6">
                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
                        <h3 className="font-bold text-lg text-slate-900 leading-tight">{ticket.subject}</h3>

@@ -5,18 +5,16 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
-    const { amount, storeId } = await req.json();
-    const key_id = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
-    const key_secret = process.env.RAZORPAY_KEY_SECRET;
+    const { amount, storeId, planId, userId, billingCycle } = await req.json();
+    const key_id = (process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || '').trim();
+    const key_secret = (process.env.RAZORPAY_KEY_SECRET || '').trim();
 
-    // Phase 5: Safe Fallback for missing keys
     if (!key_id || !key_secret) {
-        console.warn("Razorpay keys missing. Returning MOCK order for Phase 1 Recovery.");
+        console.error("Razorpay keys missing or empty.");
         return NextResponse.json({ 
-          success: true, 
-          order: { id: `order_mock_${Date.now()}`, amount: Math.round(amount * 100), currency: "INR" },
-          isMock: true
-        });
+          success: false, 
+          error: "Razorpay configuration missing. Please check RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET." 
+        }, { status: 500 });
     }
 
     const razorpay = new Razorpay({ key_id, key_secret });
@@ -25,6 +23,12 @@ export async function POST(req: NextRequest) {
       amount: Math.round(amount * 100), // amount in paisa
       currency: "INR",
       receipt: `receipt_${Date.now()}_${storeId.slice(0, 8)}`,
+      notes: {
+        plan_id: planId,
+        user_id: userId,
+        billing_cycle: billingCycle,
+        store_id: storeId
+      }
     });
 
     return NextResponse.json({ success: true, order });

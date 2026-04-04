@@ -143,6 +143,7 @@ export default function ProductForm({ isOpen, onClose, onSuccess }: ProductFormP
                   step="0.01" 
                   min="0"
                   required 
+                  inputMode="decimal"
                   value={mrp}
                   onChange={(e) => setMrp(e.target.value)}
                 />
@@ -154,6 +155,7 @@ export default function ProductForm({ isOpen, onClose, onSuccess }: ProductFormP
                   type="number" 
                   step="0.01" 
                   min="0"
+                  inputMode="decimal"
                   value={purchaseRate}
                   onChange={(e) => setPurchaseRate(e.target.value)}
                 />
@@ -166,6 +168,7 @@ export default function ProductForm({ isOpen, onClose, onSuccess }: ProductFormP
                   step="0.01" 
                   min="0"
                   required 
+                  inputMode="decimal"
                   value={saleRate}
                   onChange={(e) => setSaleRate(e.target.value)}
                 />
@@ -179,6 +182,7 @@ export default function ProductForm({ isOpen, onClose, onSuccess }: ProductFormP
                 type="number" 
                 min="0"
                 required 
+                inputMode="numeric"
                 value={stock}
                 onChange={(e) => setStock(e.target.value)}
               />

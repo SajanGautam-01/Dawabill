@@ -4,7 +4,7 @@ import { AuthButton } from "@/components/auth/AuthButton";
 import { InlineStatus, type AuthStatus } from "@/components/auth/InlineStatus";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
 import { Layout, Eye, EyeOff, Mail, Lock } from "lucide-react";
 import Link from "next/link";
 
@@ -19,36 +19,50 @@ export default function LoginPage() {
   const [fastPin, setFastPin] = useState("");
 
   useEffect(() => {
+    // 1. Zero-Flicker Identity Check
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) router.push('/dashboard');
+    };
+    checkSession();
+
     if (localStorage.getItem('dawabill_fast_pin')) {
        setPinMode(true);
     }
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session && event === 'SIGNED_IN') {
+      if (session && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
         router.push('/dashboard');
       }
     });
     return () => subscription.unsubscribe();
   }, [router]);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!email || !password) return;
 
     setStatus("loading");
     setErrorMessage("");
 
-    // 15-second Timeout Shield
-    const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error("TIMEOUT")), 15000)
-    );
-
     try {
+      // 0. Configuration Pre-Check
+      if (!isSupabaseConfigured()) {
+        setStatus("server_down");
+        setErrorMessage("Pharmacy Cloud Sync error: Missing System Credentials (URL/Key).");
+        return;
+      }
+
+      // 15-second Timeout Shield (Only once configuration is verified)
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("TIMEOUT")), 15000)
+      );
+
       const authPromise = supabase.auth.signInWithPassword({ email, password });
       
       const { data, error } = await Promise.race([authPromise, timeoutPromise]) as any;
 
       if (error) {
-        if (error.message.includes("Invalid login credentials")) {
+        if (error.message.includes("Invalid login credentials") || error.message.includes("Invalid credentials")) {
           setStatus("invalid_credentials");
         } else {
           setErrorMessage(error.message);
@@ -57,7 +71,9 @@ export default function LoginPage() {
       } else if (data.session) {
         if (fastPin.length === 4) {
            localStorage.setItem('dawabill_fast_pin', 'true');
-           localStorage.setItem('dawabill_fast_auth', btoa(`${fastPin}:${email}:${password}`));
+           // Obfuscation Layer: Reverse + Prefix + Base64
+           const secret = `DBILL:${fastPin}:${email}:${password}`.split("").reverse().join("");
+           localStorage.setItem('dawabill_fast_auth', btoa(secret));
         }
         setStatus("success");
         router.push("/dashboard");
@@ -65,8 +81,13 @@ export default function LoginPage() {
     } catch (err: any) {
       if (err.message === "TIMEOUT") {
         setStatus("timeout");
+      } else if (err.message.includes("fetch") || err.name === "TypeError") {
+        // Handle DNS errors and network drops specifically
+        setStatus("offline");
+        setErrorMessage("Network Unreachable: Verify your internet or server URL.");
       } else {
         setStatus("offline");
+        setErrorMessage(err.message || "An unexpected error occurred.");
       }
     }
   };
@@ -147,20 +168,24 @@ export default function LoginPage() {
                  onChange={(e) => {
                    const val = e.target.value.replace(/\D/g, '').slice(0,4);
                    setFastPin(val);
-                   if (val.length === 4) {
-                      const cached = localStorage.getItem('dawabill_fast_auth');
-                      if (cached) {
-                         try {
-                           const dec = atob(cached).split(':');
-                           if (dec[0] === val) {
-                             setEmail(dec[1]);
-                             setPassword(dec[2]);
-                           } else {
-                             setErrorMessage("Invalid Fast PIN.");
-                           }
-                         } catch {}
-                      }
-                   }
+                    if (val.length === 4) {
+                       const cached = localStorage.getItem('dawabill_fast_auth');
+                       if (cached) {
+                          try {
+                            // Reverse + Remove Prefix + Split
+                            const dec = atob(cached).split("").reverse().join("").replace("DBILL:", "").split(':');
+                            if (dec[0] === val) {
+                              setEmail(dec[1]);
+                              setPassword(dec[2]);
+                              setErrorMessage("");
+                            } else {
+                              setErrorMessage("Invalid Fast PIN.");
+                            }
+                          } catch {
+                             setErrorMessage("Storage corrupted.");
+                          }
+                       }
+                    }
                  }}
                  className="w-full h-12 text-center tracking-[1em] font-black text-xl rounded-xl border-2 border-slate-200 focus:border-blue-500 outline-none"
                />

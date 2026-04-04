@@ -7,8 +7,12 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
-import { Trash2, Plus, QrCode, Database, MessageSquare, Award, Tag, Bell, Settings2, Loader2 } from "lucide-react";
+import { Trash2, Plus, QrCode, Database, MessageSquare, Award, Tag, Bell, Settings2, Loader2, Smartphone, ShieldCheck, Download, RefreshCw, ChevronRight, Check } from "lucide-react";
 import BackupSection from "@/components/settings/BackupSection";
+import { useToast } from "@/components/ui/Toast";
+import { Badge } from "@/components/ui/Badge";
+import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 type PaymentAccount = {
@@ -24,12 +28,12 @@ export default function SettingsPage() {
   const [dataFetched, setDataFetched] = useState(false);
   const [loading, setLoading] = useState(true);
   
-
   const [newUpi, setNewUpi] = useState("");
   const [newName, setNewName] = useState("");
   const [isAdding, setIsAdding] = useState(false);
 
   // Advanced Settings State
+  const { toast } = useToast();
   const [whatsappKey, setWhatsappKey] = useState("");
   const [enableWhatsapp, setEnableWhatsapp] = useState(false);
   const [hasWhatsappKey, setHasWhatsappKey] = useState(false);
@@ -47,7 +51,6 @@ export default function SettingsPage() {
     
     if (data) setAccounts(data);
 
-    // Secure Fetch Store Settings via Backend (Fixing Security Exposure)
     const res = await fetch(`/api/settings/whatsapp?storeId=${storeId}`);
     const resData = await res.json();
 
@@ -56,7 +59,7 @@ export default function SettingsPage() {
       setLoyaltyThreshold(resData.data.config?.loyalty_threshold || "100");
       setHasWhatsappKey(resData.data.has_whatsapp_key);
       if (resData.data.has_whatsapp_key) {
-        setWhatsappKey("********"); // Initial mask
+        setWhatsappKey("********"); 
       }
     }
 
@@ -73,7 +76,6 @@ export default function SettingsPage() {
   const handleUpdateSettings = async () => {
     setIsUpdatingSettings(true);
     
-    // Security: Only send the actual key if it was edited (otherwise we'd overwrite it with '********')
     const finalWhatsappKey = whatsappKey === "********" ? undefined : whatsappKey;
 
     const res = await fetch('/api/settings/whatsapp', {
@@ -90,11 +92,11 @@ export default function SettingsPage() {
     const resData = await res.json();
 
     if (resData.success) {
-      alert("Settings updated successfully!");
+      toast("Settings updated successfully.", "success");
       if (finalWhatsappKey) setHasWhatsappKey(true);
       setWhatsappKey("********");
     } else {
-      alert("Error updating settings: " + resData.error);
+      toast("Update failed: " + resData.error, "error");
     }
     setIsUpdatingSettings(false);
   };
@@ -108,7 +110,7 @@ export default function SettingsPage() {
       store_id: storeId,
       upi_id: newUpi,
       display_name: newName || 'Store UPI',
-      is_default: accounts.length === 0 // make default if it is the first one
+      is_default: accounts.length === 0 
     }]);
 
     setIsAdding(false);
@@ -125,176 +127,221 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto pb-20 animate-in fade-in duration-200 px-4 sm:px-6">
-      <div className="bg-white/80 backdrop-blur-xl p-8 rounded-3xl shadow-sm border border-slate-100 mb-8">
-        <h1 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900">Settings</h1>
-        <p className="text-base sm:text-lg text-slate-500 mt-2 font-medium">Manage your store configurations and payment methods.</p>
-      </div>
-
-      <Card className="rounded-3xl shadow-lg border border-slate-100 bg-white hover:shadow-xl transition-all duration-200">
-        <CardHeader className="p-8 pb-4 border-b border-slate-100 bg-slate-50/50 rounded-t-3xl">
-          <CardTitle className="text-2xl font-black flex items-center gap-3 text-slate-800">
-            <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center shadow-inner">
-               <QrCode size={20} strokeWidth={2.5}/> 
-            </div>
-            Payment Accounts (UPI)
-          </CardTitle>
-          <CardDescription className="text-base font-medium mt-1">Add UPI IDs to generate dynamic QR codes on your bills.</CardDescription>
-        </CardHeader>
-        <CardContent className="p-8 space-y-8">
-          {/* List existing */}
-          <div className="space-y-3">
-            {loading ? (
-              <div className="text-slate-500 font-medium text-center py-6 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">Loading accounts...</div>
-            ) : accounts.length === 0 ? (
-              <div className="text-slate-500 font-medium italic border-2 border-dashed border-slate-200 p-8 rounded-2xl text-center bg-slate-50">
-                No UPI accounts added yet.
-              </div>
-            ) : (
-              accounts.map((acc) => (
-                <div key={acc.id} className="flex justify-between items-center p-5 border-2 border-slate-100 rounded-2xl shadow-sm hover:border-blue-200 hover:shadow-md transition-all group bg-white">
-                  <div>
-                    <h4 className="font-bold text-slate-900 text-lg flex items-center gap-2">
-                      {acc.display_name} 
-                      {acc.is_default && <span className="text-[10px] bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full uppercase tracking-widest font-black shadow-inner">Default</span>}
-                    </h4>
-                    <p className="text-sm text-slate-500 font-mono mt-0.5 font-medium">{acc.upi_id}</p>
-                  </div>
-                  <Button variant="ghost" size="icon" onClick={() => handleDelete(acc.id)} className="h-10 w-10 rounded-xl text-slate-400 opacity-0 group-hover:opacity-100 hover:text-red-600 hover:bg-red-50 transition-all">
-                    <Trash2 size={18} strokeWidth={2.5} />
-                  </Button>
-                </div>
-              ))
-            )}
+    <div className="view-container space-y-12 pb-24 max-w-7xl mx-auto">
+      
+      {/* ── HEADER ────────────────────────────────────────────────────────── */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-slate-100 pb-10">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 mb-1">
+            <Badge variant="outline" className="text-primary bg-primary/5 border-primary/10 font-bold uppercase tracking-widest text-[9px]">Store Management</Badge>
+            <Badge variant="outline" className="text-slate-500 bg-slate-50 border-slate-100 font-bold uppercase tracking-widest text-[9px]">Secure Access</Badge>
           </div>
-
-          <form onSubmit={handleAddAccount} className="pt-6 border-t-2 border-dashed border-slate-200 flex flex-col sm:flex-row gap-5">
-            <div className="flex-1 space-y-2">
-              <Label htmlFor="display_name" className="text-sm font-bold text-slate-700">Display Name</Label>
-              <Input 
-                id="display_name" 
-                placeholder="e.g. HDFC PhonePe" 
-                value={newName} 
-                onChange={e => setNewName(e.target.value)} 
-                className="h-14 rounded-2xl border-2 border-slate-200 focus-visible:ring-4 focus-visible:ring-blue-500/20 text-base font-medium"
-              />
-            </div>
-            <div className="flex-[2] space-y-2">
-              <Label htmlFor="upi_id" className="text-sm font-bold text-slate-700">UPI ID <span className="text-red-500">*</span></Label>
-              <Input 
-                id="upi_id" 
-                placeholder="e.g. storename@bank" 
-                required 
-                value={newUpi} 
-                onChange={e => setNewUpi(e.target.value)} 
-                className="h-14 rounded-2xl border-2 border-slate-200 focus-visible:ring-4 focus-visible:ring-blue-500/20 text-base font-medium"
-              />
-            </div>
-            <div className="flex items-end">
-              <Button type="submit" disabled={isAdding || !newUpi} className="w-full sm:w-auto h-14 px-8 rounded-2xl font-bold text-base shadow-lg shadow-blue-500/20 bg-blue-600 hover:bg-blue-700 hover:-translate-y-0.5 transition-all text-white flex items-center gap-2">
-                <Plus size={20} strokeWidth={2.5}/> {isAdding ? "Adding..." : "Add UPI"}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-
-      {/* Promotions Link */}
-      <Link href="/settings/discounts">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-8 rounded-3xl shadow-lg border border-blue-500 hover:scale-[1.01] transition-transform cursor-pointer group flex items-center justify-between text-white mb-8">
-          <div className="flex items-center gap-5">
-            <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md">
-              <Tag size={28} />
-            </div>
-            <div>
-              <h2 className="text-2xl font-black">Manage Discounts</h2>
-              <p className="text-blue-100 font-medium opacity-90">Create and track store-wide promotional offers.</p>
-            </div>
-          </div>
-          <div className="h-10 w-10 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/40 transition-colors">
-            <Plus size={20} />
-          </div>
+          <h1 className="text-4xl font-bold tracking-tight text-slate-900">System <span className="text-primary italic">Settings</span></h1>
+          <p className="text-slate-500 font-medium max-w-xl">
+             Configure your pharmacy's payment methods, notifications, and customer loyalty rules.
+          </p>
         </div>
-      </Link>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-        {/* WhatsApp Integration */}
-        <Card className="rounded-3xl shadow-lg border border-slate-100 bg-white">
-          <CardHeader className="p-8 pb-4">
-            <CardTitle className="text-xl font-black flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-100 text-green-600 rounded-xl flex items-center justify-center">
-                 <MessageSquare size={20} />
-              </div>
-              WhatsApp Alerts
-            </CardTitle>
-            <CardDescription className="font-medium">Configure automatic expiry & billing alerts.</CardDescription>
-          </CardHeader>
-          <CardContent className="p-8 space-y-6">
-            <div className="space-y-2">
-              <Label className="text-sm font-bold">WATI/Twilio API Key</Label>
-              <Input 
-                type="password"
-                placeholder="Enter your messaging API key"
-                value={whatsappKey}
-                onChange={e => setWhatsappKey(e.target.value)}
-                className="h-12 rounded-xl"
-              />
-            </div>
-            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
-              <div className="flex items-center gap-3">
-                <Bell size={18} className="text-slate-400" />
-                <span className="font-bold text-slate-700">Enable Automated Alerts</span>
-              </div>
-              <input 
-                type="checkbox" 
-                checked={enableWhatsapp}
-                onChange={e => setEnableWhatsapp(e.target.checked)}
-                className="w-10 h-5 bg-slate-200 rounded-full appearance-none checked:bg-green-500 transition-colors cursor-pointer relative after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-all checked:after:left-6"
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Loyalty Program */}
-        <Card className="rounded-3xl shadow-lg border border-slate-100 bg-white">
-          <CardHeader className="p-8 pb-4">
-            <CardTitle className="text-xl font-black flex items-center gap-3">
-              <div className="w-10 h-10 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center">
-                 <Award size={20} />
-              </div>
-              Loyalty Points
-            </CardTitle>
-            <CardDescription className="font-medium">Reward your regular customers.</CardDescription>
-          </CardHeader>
-          <CardContent className="p-8 space-y-6">
-            <div className="space-y-2">
-              <Label className="text-sm font-bold">1 Point Per (₹)</Label>
-              <Input 
-                type="number"
-                placeholder="e.g. 100"
-                value={loyaltyThreshold}
-                onChange={e => setLoyaltyThreshold(e.target.value)}
-                className="h-12 rounded-xl"
-              />
-              <p className="text-xs text-slate-400 font-medium italic">Example: ₹1000 spend = 10 points.</p>
-            </div>
-            <Button 
-                onClick={handleUpdateSettings} 
-                className="w-full h-12 rounded-xl font-bold bg-slate-900 hover:bg-black text-white"
-                disabled={isUpdatingSettings}
-            >
-              {isUpdatingSettings ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Settings2 size={18} className="mr-2" />}
-              Save Configuration
-            </Button>
-          </CardContent>
-        </Card>
       </div>
 
-      
-      {/* Backup & Portability Section */}
-      {storeId && <BackupSection storeId={storeId} />}
-      
-      {/* Additional Settings (Store Details, Invoice Prefix) can go here later */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+        
+        {/* Left Column: Payments & Backup */}
+        <div className="lg:col-span-2 space-y-10">
+          
+          {/* Payment Methods Card */}
+          <Card className="bg-white border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+            <CardHeader className="p-8 border-b border-slate-50 bg-slate-50/30">
+              <div className="flex items-center gap-4">
+                 <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
+                    <QrCode size={22} />
+                 </div>
+                 <div>
+                    <CardTitle className="text-2xl font-bold text-slate-900">Payment Accounts</CardTitle>
+                    <CardDescription className="font-medium text-slate-500">Configure UPI IDs for billing and checkout.</CardDescription>
+                 </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-8 space-y-8">
+              <div className="space-y-3">
+                <AnimatePresence mode="popLayout">
+                  {loading ? (
+                    <div className="h-32 flex items-center justify-center border-2 border-dashed border-slate-100 rounded-2xl">
+                       <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                    </div>
+                  ) : accounts.length === 0 ? (
+                    <div className="h-32 flex flex-col items-center justify-center space-y-2 border-2 border-dashed border-slate-100 rounded-2xl bg-slate-50/50">
+                       <Smartphone className="h-8 w-8 text-slate-300" />
+                       <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">No UPI accounts linked</p>
+                    </div>
+                  ) : (
+                    accounts.map((acc) => (
+                      <motion.div 
+                        key={acc.id}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="group flex items-center justify-between p-5 rounded-2xl bg-white border border-slate-100 hover:border-primary/30 transition-all shadow-sm shadow-slate-100/50"
+                      >
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                             <span className="font-bold text-slate-900">{acc.display_name}</span>
+                             {acc.is_default && <Badge className="bg-emerald-50 text-emerald-700 border-emerald-100 px-2 py-0 h-5 text-[8px] font-bold uppercase">Default</Badge>}
+                          </div>
+                          <p className="text-sm font-mono text-primary font-bold">{acc.upi_id}</p>
+                        </div>
+                        <Button variant="ghost" size="icon" onClick={() => handleDelete(acc.id)} className="h-10 w-10 text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all">
+                           <Trash2 size={16} />
+                        </Button>
+                      </motion.div>
+                    ))
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <form onSubmit={handleAddAccount} className="pt-8 border-t border-slate-100 grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div className="md:col-span-2 space-y-2">
+                  <Label className="text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Account Name</Label>
+                  <Input 
+                    placeholder="e.g. Shop GPay" 
+                    value={newName} 
+                    onChange={e => setNewName(e.target.value)} 
+                    className="h-12 rounded-xl bg-slate-50 border-slate-200 focus:border-primary font-bold"
+                  />
+                </div>
+                <div className="md:col-span-2 space-y-2">
+                  <Label className="text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">UPI ID / VPA</Label>
+                  <Input 
+                    placeholder="pharmacy@upi" 
+                    required 
+                    value={newUpi} 
+                    onChange={e => setNewUpi(e.target.value)} 
+                    className="h-12 rounded-xl bg-slate-50 border-slate-200 focus:border-primary font-bold"
+                  />
+                </div>
+                <div className="flex items-end">
+                   <Button type="submit" disabled={isAdding || !newUpi} className="h-12 w-full rounded-xl font-bold gap-2 shadow-lg shadow-primary/10">
+                      <Plus size={16} /> Add Method
+                   </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+
+          {/* Campaign Center Link */}
+          <Link href="/settings/discounts" className="block group">
+            <div className="relative overflow-hidden p-10 rounded-3xl bg-slate-900 text-white shadow-xl group-hover:bg-black transition-all">
+              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
+                <Tag size={120} />
+              </div>
+              <div className="relative z-10 flex items-center justify-between">
+                <div className="space-y-2">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-[9px] font-bold uppercase tracking-widest">Revenue Management</div>
+                  <h2 className="text-3xl font-bold tracking-tight">Discounts & Offers</h2>
+                  <p className="text-slate-400 font-medium italic">Configure seasonal markdowns and loyalty redemptions.</p>
+                </div>
+                <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-md group-hover:bg-primary text-white transition-all shadow-lg">
+                  <ChevronRight size={28} />
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* Backup Section */}
+          {storeId && (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+               <BackupSection storeId={storeId} />
+            </div>
+          )}
+        </div>
+
+        {/* Right Column: Configs */}
+        <div className="space-y-10">
+           
+           {/* WhatsApp Settings */}
+           <Card className="bg-white border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+              <CardHeader className="p-8 pb-4">
+                <div className="flex items-center gap-3">
+                   <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                      <MessageSquare size={18} />
+                   </div>
+                   <CardTitle className="text-xl font-bold text-slate-900">Notifications</CardTitle>
+                </div>
+                <CardDescription className="font-medium text-slate-500 mt-1">Configure WhatsApp alert settings.</CardDescription>
+              </CardHeader>
+              <CardContent className="p-8 space-y-6">
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Gateway API Token</Label>
+                  <Input 
+                    type="password"
+                    placeholder="Store Token"
+                    value={whatsappKey}
+                    onChange={e => setWhatsappKey(e.target.value)}
+                    className="h-12 rounded-xl bg-slate-50 border-slate-200 font-bold"
+                  />
+                </div>
+                <div className="flex items-center justify-between p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                  <div className="space-y-0.5">
+                    <p className="text-sm font-bold text-slate-900">Broadcast Service</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Alerts</p>
+                  </div>
+                  <button 
+                    onClick={() => setEnableWhatsapp(!enableWhatsapp)}
+                    className={cn(
+                      "w-12 h-6 rounded-full p-1 transition-all",
+                      enableWhatsapp ? "bg-primary" : "bg-slate-200"
+                    )}
+                  >
+                    <div className={cn(
+                      "w-4 h-4 bg-white rounded-full transition-all shadow-md",
+                      enableWhatsapp ? "translate-x-6" : "translate-x-0"
+                    )} />
+                  </button>
+                </div>
+              </CardContent>
+           </Card>
+
+           {/* Loyalty Program */}
+           <Card className="bg-white border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+              <CardHeader className="p-8 pb-4">
+                <div className="flex items-center gap-3">
+                   <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100">
+                      <Award size={18} />
+                   </div>
+                   <CardTitle className="text-xl font-bold text-slate-900">Loyalty Program</CardTitle>
+                </div>
+                <CardDescription className="font-medium text-slate-500 mt-1">Reward your regular customers.</CardDescription>
+              </CardHeader>
+              <CardContent className="p-8 space-y-8">
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Points Calculation</Label>
+                  <div className="flex items-center gap-3">
+                     <div className="flex-1 relative">
+                        <Input 
+                          type="number"
+                          placeholder="100"
+                          value={loyaltyThreshold}
+                          onChange={e => setLoyaltyThreshold(e.target.value)}
+                          className="h-12 rounded-xl bg-slate-50 border-slate-200 font-bold text-lg pl-8"
+                        />
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">₹</span>
+                     </div>
+                     <Badge variant="outline" className="h-12 px-4 rounded-xl text-slate-500 border-slate-200 font-bold">/ 1 Pt</Badge>
+                  </div>
+                  <p className="text-[10px] text-slate-400 italic font-medium ml-1">Customers get 1 point for every ₹{loyaltyThreshold} spent.</p>
+                </div>
+                
+                <Button 
+                    onClick={handleUpdateSettings} 
+                    className="w-full h-14 rounded-2xl font-bold text-base gap-3 shadow-lg shadow-primary/10 active:scale-95 transition-all"
+                    disabled={isUpdatingSettings}
+                >
+                  {isUpdatingSettings ? <Loader2 className="h-5 w-5 animate-spin" /> : <Check size={20} />}
+                  Save All Changes
+                </Button>
+              </CardContent>
+           </Card>
+
+        </div>
+      </div>
     </div>
   );
 }
